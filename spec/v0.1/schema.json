@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/aohara345/simulation-protocol/spec/v0.1/schema.json",
+  "title": "Simulation Package v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "name", "target", "oracle"],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+      "description": "URL-friendly identifier."
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "spec_version": {
+      "type": "string",
+      "enum": ["0.1"],
+      "description": "Which simulation-protocol spec version this package conforms to. Optional at v0.1; framework defaults to 0.1 when absent."
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "oneOf": [
+        { "required": ["composition"], "properties": { "composition": { "type": "string" } } },
+        { "required": ["kernel"],      "properties": { "kernel":      { "type": "string" } } },
+        { "required": ["integration"], "properties": { "integration": { "type": "string" } } },
+        { "required": ["action"],      "properties": { "action":      { "type": "string" } } },
+        { "required": ["records"],     "properties": { "records":     { "type": "object" } } }
+      ]
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "string", "int", "float", "bool", "enum", "file",
+              "normal", "uniform", "discrete", "categorical", "bootstrap"
+            ]
+          }
+        }
+      }
+    },
+    "determinism": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "seed": { "type": "integer" },
+        "freeze_time_at": { "type": "string", "format": "date-time" },
+        "stubs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target", "fixture"],
+            "properties": {
+              "target": { "type": "object", "minProperties": 1, "maxProperties": 1 },
+              "fixture": {}
+            }
+          }
+        }
+      }
+    },
+    "oracle": {
+      "type": "object",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "required": ["kind", "expect"],
+          "properties": {
+            "kind": { "const": "literal" },
+            "expect": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["kind", "baseline", "compare"],
+          "properties": {
+            "kind": { "const": "baseline-run" },
+            "baseline": { "type": "string", "pattern": "^sr_" },
+            "compare": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["kind", "invariants"],
+          "properties": {
+            "kind": { "const": "mathematical" },
+            "invariants": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        },
+        {
+          "additionalProperties": false,
+          "required": ["kind", "bounds"],
+          "properties": {
+            "kind": { "const": "statistical" },
+            "bounds": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+          }
+        }
+      ]
+    },
+    "run_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "n": { "type": "integer", "minimum": 1, "maximum": 10000 },
+        "on_failure": { "type": "string", "enum": ["stop", "cluster", "continue"] }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

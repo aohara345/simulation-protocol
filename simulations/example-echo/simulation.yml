@@ -1,0 +1,44 @@
+slug: example-echo
+name: Example — Echo composition regression
+description: |
+  Canonical v0.1 example. Targets a Composition that echoes its input
+  through a stubbed integration; the oracle asserts the round-trip
+  produced the expected value. Small, complete, self-contained —
+  meant to be the first simulation authors read.
+
+  This simulation validates the framework's determinism envelope
+  itself. If the seeded RNG or stub interception regresses, this
+  simulation fails.
+
+spec_version: "0.1"
+
+target:
+  composition: echo-round-trip
+
+inputs:
+  message:
+    kind: string
+    default: hello
+
+determinism:
+  seed: 42
+  freeze_time_at: "2026-01-01T00:00:00Z"
+  stubs:
+    - target: { integration: some-fake-echo-vendor }
+      fixture:
+        echoed: "hello"
+        received_at: "2026-01-01T00:00:00Z"
+
+oracle:
+  kind: literal
+  expect:
+    - "outputs.echoed == \"hello\""
+    - "outputs.received_at == \"2026-01-01T00:00:00Z\""
+
+run_policy:
+  n: 1
+  on_failure: stop
+
+metadata:
+  owner: platform-eng
+  purpose: canonical-example
