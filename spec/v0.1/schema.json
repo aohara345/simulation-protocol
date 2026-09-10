@@ -21,12 +21,19 @@
     "target": {
       "type": "object",
       "additionalProperties": false,
+      "properties": {
+        "composition": { "type": "string" },
+        "kernel":      { "type": "string" },
+        "integration": { "type": "string" },
+        "action":      { "type": "string" },
+        "records":     { "type": "object" }
+      },
       "oneOf": [
-        { "required": ["composition"], "properties": { "composition": { "type": "string" } } },
-        { "required": ["kernel"],      "properties": { "kernel":      { "type": "string" } } },
-        { "required": ["integration"], "properties": { "integration": { "type": "string" } } },
-        { "required": ["action"],      "properties": { "action":      { "type": "string" } } },
-        { "required": ["records"],     "properties": { "records":     { "type": "object" } } }
+        { "required": ["composition"] },
+        { "required": ["kernel"] },
+        { "required": ["integration"] },
+        { "required": ["action"] },
+        { "required": ["records"] }
       ]
     },
     "inputs": {
