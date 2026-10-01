@@ -1,3 +1,15 @@
+# simulation-protocol (archived)
+
+This spec now lives in Paver, alongside every other primitive spec.
+This repo only ever held v0.1; v0.2 through v0.6 were authored in Paver.
+
+- Current version: `simulation@0.6`.
+- Schemas: `backend/app/services/primitives/protocols/schemas/simulation-*.json` in `aohara345/paver-platform`.
+- Live registration: `GET https://api.get-paver.com/api/v1/protocol_registrations/simulation`.
+- Decision: ADR 0042 in `aohara345/paver-platform`.
+
+---
+
 # simulation-protocol
 
 **A protocol for verifying anything.**
